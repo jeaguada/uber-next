@@ -3,15 +3,16 @@ import tw from "tailwind-styled-components";
 import { useRouter } from "next/router";
 import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../firebase";
+import { useUser } from "@auth0/nextjs-auth0";
+import Link from "next/link";
 
 function Login() {
+  const { user, error, isLoading } = useUser();
   const router = useRouter();
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        router.push("/");
-      }
-    });
+    if (user) {
+      router.push("/");
+    }
   }, []);
 
   return (
@@ -19,13 +20,9 @@ function Login() {
       <UberLogo src="https://i.ibb.co/n6LWQM4/Post.png" />
       <Title>Log in to access your account</Title>
       <HeadImage src="https://i.ibb.co/CsV9RYZ/login-image.png" />
-      <SignInButton
-        onClick={() => {
-          signInWithPopup(auth, provider);
-        }}
-      >
-        Sign in with Google
-      </SignInButton>
+      <Link href="/api/auth/login">
+        <SignInButton>Sign in with Google</SignInButton>
+      </Link>
     </Wrapper>
   );
 }
